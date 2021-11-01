@@ -6,14 +6,14 @@ function App() {
   let verb = Object.keys(envs).reduce(key => (acc, key) => {
     return acc + ` ${key}: ${envs[key]} \n`
   });
-
+  let customID = process.env.CUSTOM_ID;
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          ENV Test
+          ENV Test: {customID || 'No custom id'}
           <pre>
             {verb}
           </pre>
