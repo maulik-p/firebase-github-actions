@@ -2,21 +2,19 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  const envs = process.env;
-  let verb = Object.keys(envs).reduce(key => (acc, key) => {
-    return acc + ` ${key}: ${envs[key]} \n`
-  });
-  let customID = process.env.CUSTOM_ID;
+
+  let customID = process.env.REACT_APP_CUSTOM_ID;
+  let apiEndpoint = process.env.REACT_APP_API_KEY;
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          ENV Test: {customID || 'No custom id'}
-          <pre>
-            {verb}
-          </pre>
+          Custom Id: {customID || 'No custom id'}
+        </p>
+        <p>
+          API endpoint: {apiEndpoint || 'No endpoint'}
         </p>
         <a
           className="App-link"
