@@ -9,9 +9,7 @@ name: Deploy to Firebase Hosting on merge
       - develop
       - "feature/**"
       - "release/**"
-env:
-  REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
-  REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -20,7 +18,7 @@ jobs:
       matrix:
         node-version: [16.x]
 
-    environment: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref == 'refs/heads/develop' && 'develop' }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/develop' && 'release' || github.ref == 'refs/heads/develop' && 'development' }}
    
     steps:
       - uses: actions/checkout@v2
@@ -48,18 +46,27 @@ jobs:
       
       ## Build & Deploy Dev
       - name: Build & Deploy Dev
+        env:
+          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
+          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
         if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
         run: |
           yarn firebase deploy --only hosting -P development --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
       ## Build & Deploy Staging
       - name: Build & Deploy Staging
+        env:
+          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
+          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
         if: contains(github.ref, 'refs/heads/release/')
         run: |
           yarn firebase deploy --only hosting -P staging --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
       ## Build & Deploy Production
       - name: Build & Deploy Production
+        env:
+          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
+          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
         if: github.ref == 'refs/heads/main'
         run: |
           yarn firebase deploy --only hosting -P production --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
