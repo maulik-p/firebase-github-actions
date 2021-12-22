@@ -18,8 +18,8 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref == 'refs/heads/develop' && 'develop' }}
     steps:
       - uses: actions/checkout@v2
-      - run: | 
-        CI=true && yarn build
+      - run:  | 
+          CI=true && yarn build
       
       # - uses: FirebaseExtended/action-hosting-deploy@v0
       #   with:
