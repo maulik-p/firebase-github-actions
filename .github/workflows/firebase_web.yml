@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: | 
-      CI=true && yarn build
+        CI=true && yarn build
       
       # - uses: FirebaseExtended/action-hosting-deploy@v0
       #   with:
