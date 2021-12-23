@@ -64,7 +64,6 @@ jobs:
           REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
           REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
         if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
-        env:
         run: |
           yarn firebase deploy --only hosting -P development --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
