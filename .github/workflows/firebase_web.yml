@@ -38,8 +38,7 @@ jobs:
         env:
           REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
           REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
-
-      - run:  | 
+        run:  | 
           CI=true && yarn build
       
       # - uses: FirebaseExtended/action-hosting-deploy@v0
