@@ -3,10 +3,16 @@
 
 name: Deploy to Firebase Hosting on merge
 'on':
+  pull_request:
+    branches:
+     - main
+     - develop
+     - release
   push:
     branches:
       - main
       - develop
+      - release
       - "feature/**"
       - "release/**"
 
@@ -18,7 +24,7 @@ jobs:
       matrix:
         node-version: [16.x]
 
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/develop' && 'release' || github.ref == 'refs/heads/develop' && 'development' }}
+    environment: ${{ ((github.ref == 'refs/heads/main'|| github.event.pull_request.base.ref == 'main') && 'production') || ((github.ref == 'refs/heads/release' || github.event.pull_request.base.ref == 'release') && 'release') || ((github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop') && 'development') || 'development' }}
    
     steps:
       - uses: actions/checkout@v2
@@ -34,7 +40,11 @@ jobs:
         run: |
           yarn
 
-      - run:  | 
+      - name: Env Setup
+        env:
+          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
+          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
+        run:  | 
           CI=true && yarn build
       
       # - uses: FirebaseExtended/action-hosting-deploy@v0
@@ -43,7 +53,16 @@ jobs:
       #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FIR_GITHUB_ACTIONS_FED89 }}'
       #     channelId: live
       #     projectId: fir-github-actions-fed89
-      
+      - name: Env
+        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
+        run: echo "Environment develop"
+      - name: Env
+        if: github.ref == 'refs/heads/release' || github.event.pull_request.base.ref == 'release'
+        run: echo "Environment staging"
+      - name: Env
+        if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
+        run: echo "Environment main"
+
       ## Build & Deploy Dev
       - name: Build & Deploy Dev
         env:
