@@ -44,7 +44,7 @@ jobs:
       #     channelId: live
       #     projectId: fir-github-actions-fed89
       - name: Env
-        if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
+        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
         run: echo "Environment develop"
       - name: Env
         if: github.ref == 'refs/heads/release' || github.event.pull_request.base.ref == 'release'
