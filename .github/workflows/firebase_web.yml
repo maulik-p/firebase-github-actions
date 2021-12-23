@@ -18,7 +18,7 @@ jobs:
       matrix:
         node-version: [16.x]
 
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/release' && 'release' || github.ref == 'refs/heads/develop' && 'development' || 'development' }}
+    environment: ${{ ((github.ref == 'refs/heads/main'|| github.event.pull_request.base.ref == 'main') && 'production') || ((github.ref == 'refs/heads/release' || github.event.pull_request.base.ref == 'release') && 'release') || ((github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop') && 'development') || 'development' }}
    
     steps:
       - uses: actions/checkout@v2
