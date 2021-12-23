@@ -43,7 +43,16 @@ jobs:
       #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FIR_GITHUB_ACTIONS_FED89 }}'
       #     channelId: live
       #     projectId: fir-github-actions-fed89
-      
+      - name: Env
+        if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
+        run: echo "Environment develop"
+      - name: Env
+        if: github.ref == 'refs/heads/release' || github.event.pull_request.base.ref == 'release'
+        run: echo "Environment staging"
+      - name: Env
+        if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
+        run: echo "Environment main"
+
       ## Build & Deploy Dev
       - name: Build & Deploy Dev
         env:
