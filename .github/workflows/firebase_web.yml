@@ -3,10 +3,16 @@
 
 name: Deploy to Firebase Hosting on merge
 'on':
+  pull_request:
+    branches:
+     - main
+     - develop
+     - release
   push:
     branches:
       - main
       - develop
+      - release
       - "feature/**"
       - "release/**"
 
