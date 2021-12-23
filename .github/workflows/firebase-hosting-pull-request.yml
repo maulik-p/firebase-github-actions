@@ -42,7 +42,7 @@ jobs:
       #     channelId: live
       #     projectId: fir-github-actions-fed89
       - name: Env
-        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
+        if: contains(github.ref, 'refs/heads/feature/') || github.event.pull_request.base.ref == 'develop'
         run: echo "Environment develop"
       - name: Env
         if: github.ref == 'refs/heads/release' || github.event.pull_request.base.ref == 'release'
@@ -53,18 +53,18 @@ jobs:
 
       ## Deploy Dev
       - name: Deploy Dev
-        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
+        if: contains(github.ref, 'refs/heads/feature') || github.event.pull_request.base.ref == 'develop'
         run: |
           yarn firebase deploy --only hosting -P development --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
       ## Deploy Staging
       - name: Deploy Staging
-        if: contains(github.ref, 'refs/heads/release/') || github.ref == 'refs/heads/release'
+        if: contains(github.ref, 'refs/heads/release') || github.event.pull_request.base.ref == 'release'
         run: |
           yarn firebase deploy --only hosting -P staging --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
       ## Deploy Production
       - name: Deploy Production
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
+        if: contains(github.ref, 'refs/heads/main') || github.event.pull_request.base.ref == 'main'
         run: |
           yarn firebase deploy --only hosting -P production --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
