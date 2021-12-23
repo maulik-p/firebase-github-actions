@@ -3,11 +3,6 @@
 
 name: Deploy to Firebase Hosting on merge
 'on':
-  pull_request:
-    branches:
-     - main
-     - develop
-     - release
   push:
     branches:
       - main
@@ -40,7 +35,7 @@ jobs:
         run: |
           yarn
 
-      - name: Env Setup
+      - name: Env Setup & Build
         env:
           REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
           REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
@@ -63,29 +58,20 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
         run: echo "Environment main"
 
-      ## Build & Deploy Dev
-      - name: Build & Deploy Dev
-        env:
-          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
-          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
+      ## Deploy Dev
+      - name: Deploy Dev
         if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/develop'
         run: |
           yarn firebase deploy --only hosting -P development --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
-      ## Build & Deploy Staging
-      - name: Build & Deploy Staging
-        env:
-          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
-          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
-        if: contains(github.ref, 'refs/heads/release/')
+      ## Deploy Staging
+      - name: Deploy Staging
+        if: contains(github.ref, 'refs/heads/release/') || github.ref == 'refs/heads/release'
         run: |
           yarn firebase deploy --only hosting -P staging --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
       
-      ## Build & Deploy Production
-      - name: Build & Deploy Production
-        env:
-          REACT_APP_API_KEY: ${{secrets.REACT_APP_API_KEY}}
-          REACT_APP_CUSTOM_ID: ${{secrets.REACT_APP_CUSTOM_ID}}
-        if: github.ref == 'refs/heads/main'
+      ## Deploy Production
+      - name: Deploy Production
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release'
         run: |
           yarn firebase deploy --only hosting -P production --token ${{ SECRETS.FIREBASE_TOKEN }} --message "$FIREBASE_MESSAGE"
