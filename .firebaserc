@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "fir-github-actions-fed89"
+    "production": "fir-github-actions-fed89",
+    "staging": "fir-github-actions-stg",
+    "development": "fir-github-actions-dev"
   }
 }
